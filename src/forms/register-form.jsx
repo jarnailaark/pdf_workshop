@@ -29,12 +29,19 @@ const RegisterForm = () => {
   const onSubmit = async (data) =>{ 
     console.log(data)
     try {
-      let response = await fetch('/api/auth', {
+      let response = await fetch('http://localhost:3000/api/auth', {
         method: 'POST',
-        body: data,
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
       response = await response.json()
-      alert(`${response.fullname} ${response.email} ${response.password}`)
+      if (response.message) {
+        alert(`${response.message}`);  
+      } else {
+        alert(`${response.error}`);  
+      }
     } catch (error) {
       // Handle error
       console.error('Error submitting form:', error);

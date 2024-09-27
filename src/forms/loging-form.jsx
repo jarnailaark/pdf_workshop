@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Link from "next/link";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from 'next/router';
 
 const schema = yup
   .object({
@@ -23,8 +25,30 @@ const LogingForm = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) =>{ 
+  const router = useRouter();
+  const onSubmit = async (data) =>{ 
     console.log(data)
+    try {
+      let response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      response = await response.json();
+      
+      if (response.success) {
+        console.log(response.user_data);
+        alert(`${response.token}`);
+        // router.push('/'); 
+      } else {
+        alert(`${response.message}`);  
+      }
+    } catch (error) {
+      // Handle error
+      console.error('Error submitting form:', error);
+    }
     reset()
   };
 
@@ -76,12 +100,11 @@ const LogingForm = () => {
                 )}
               </span>
             </div>
+            
               <p className="form_error">{errors.password?.message}</p>
             </div>
           </div>
         </div>
-
-
         <div className="signin-banner-form-remember">
           <div className="row">
             <div className="col-6">

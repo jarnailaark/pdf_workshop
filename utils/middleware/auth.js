@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-export default function authenticate(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
+export function authenticateToken(req, res, next) {
+  const token = req.headers['authorization'];
 
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res.status(401).json({ message: 'Access denied, no token provided' });
   }
 
   try {
@@ -12,6 +12,6 @@ export default function authenticate(req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid token' });
+    res.status(400).json({ message: 'Invalid token' });
   }
 }
