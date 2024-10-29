@@ -16,10 +16,21 @@ const Header = () => {
       const {sticky}  =  useSticky()
       const [searchOpen, setSearchOpen] = useState(false)
       const [sidebarOpen, setSidebarOpen] = useState(false)
+      const [userLogin, setUserLogin] = useState(null)
+      const [userName, setUserName] = useState(null)
 
       // gsa use
       let g_timline = new gsap.timeline();
       let header_top_animation = useRef(null)
+
+      useEffect(() => {
+         const token = localStorage.getItem("token");
+         const name = localStorage.getItem("u_name");
+         if (token) {
+            setUserLogin(token);
+            setUserName(name);
+         }
+      }, []);
 
       useEffect(() => {
          gsap.from(header_top_animation,  {
@@ -33,7 +44,17 @@ const Header = () => {
             delay: 1.05
         })
       },[])
- 
+      // alert(localStorage.getItem("token"));
+      // alert(localStorage.getItem("u_id"));
+      // alert(localStorage.getItem("u_email"));
+      // alert(localStorage.getItem("u_name"));
+
+      // alert(response.user_data.email);
+
+      const handleLogout = () => {
+         setUserLogin(null);
+         localStorage.removeItem("token"); // Clear login state
+      };
 
     return (
         <>
@@ -85,10 +106,20 @@ const Header = () => {
                                     onClick={() => setSearchOpen(true)} > 
                                     <SearchIconTwo />
                                  </a>
-                                 <Link className="d-none d-lg-inline-block last-child" href="/sign-in">
+                                 {userLogin ? (
+                                    
+                                    <a className="d-none d-lg-inline-block last-child" onClick={handleLogout}>
                                     <UserIcon /> 
-                                    <span>Log In</span>
-                                 </Link>
+                                       <span> Logout</span>
+                                    </a>
+                                    
+                                 ) : (
+                                    <Link className="d-none d-lg-inline-block last-child" href="/sign-in">
+                                    <UserIcon /> 
+                                       <span>Log In</span>
+                                    </Link>
+                                 )}
+                                 
                               </div>
                               <div className="header-bottom__btn d-flex align-items-center">
                                  <Link className="tp-btn-white tp-btn-hover alt-color-black d-none d-md-inline-block" href="/service-details">

@@ -39,9 +39,17 @@ const LogingForm = () => {
       response = await response.json();
       
       if (response.success) {
-        console.log(response.user_data);
-        alert(`${response.token}`);
+        console.log(response.user_data.email);
+        const token = response.token;
+        localStorage.setItem("token", token);
+        localStorage.setItem("u_id", response.user_data.user_id);
+        localStorage.setItem("u_email", response.user_data.email);
+        localStorage.setItem("u_name", response.user_data.username);
+
         // router.push('/'); 
+        if (token) {
+            router.push('/');
+        }
       } else {
         alert(`${response.message}`);  
       }
