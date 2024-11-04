@@ -29,7 +29,7 @@ const RegisterForm = () => {
   const onSubmit = async (data) =>{ 
     console.log(data)
     try {
-      let response = await fetch('http://localhost:3000/api/auth', {
+      let response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

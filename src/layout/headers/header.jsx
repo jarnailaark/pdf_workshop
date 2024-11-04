@@ -7,6 +7,8 @@ import {gsap} from 'gsap';
 import Link from 'next/link';
 import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import NavMenu from './nav-menu';
+import ProfileNavMenu from './profile-nav-menu';
+
 import Image from 'next/image';
 
 import logo from "../../../public/assets/img/logo/logo-black.png"
@@ -18,7 +20,8 @@ const Header = () => {
       const [sidebarOpen, setSidebarOpen] = useState(false)
       const [userLogin, setUserLogin] = useState(null)
       const [userName, setUserName] = useState(null)
-
+      const [isOpen, setIsOpen] = useState(false);
+      const [selectedOption, setSelectedOption] = useState(null);
       // gsa use
       let g_timline = new gsap.timeline();
       let header_top_animation = useRef(null)
@@ -49,7 +52,29 @@ const Header = () => {
       // alert(localStorage.getItem("u_email"));
       // alert(localStorage.getItem("u_name"));
 
-      // alert(response.user_data.email);
+      const toggleDropdown = () => {
+         setIsOpen(!isOpen);
+      };
+     
+      const handleOptionClick = (option) => {
+         setSelectedOption(option);
+         setIsOpen(false);
+      };
+     
+      const options = [
+         {
+            title: "Edit Profile",
+            link: "/profile-detail",
+         },
+         {
+            title: "Change Password",
+            link: "/",
+         },
+         {
+            title: "Logout",
+            link: "/logout" 
+         },
+      ];
 
       const handleLogout = () => {
          setUserLogin(null);
@@ -107,11 +132,34 @@ const Header = () => {
                                     <SearchIconTwo />
                                  </a>
                                  {userLogin ? (
-                                    
-                                    <a className="d-none d-lg-inline-block last-child" onClick={handleLogout}>
-                                    <UserIcon /> 
-                                       <span> Logout</span>
-                                    </a>
+                                    <div style={{ position: 'relative' }}>
+                                    <button onClick={toggleDropdown}>
+                                       {userName}
+                                    </button>
+                              
+                                    {isOpen && (
+                                      <div style={{ position: 'absolute',width: '200px', top: '30px', left: 0, border: '1px solid #ccc', background: '#fff' }}>
+                                        {options.map((option) => (
+                                          <div
+                                            key={option}
+                                            onClick={() => handleOptionClick(option)}
+                                            style={{ padding: '8px', cursor: 'pointer' }}
+                                          >
+                                            <Link href={option.link}  >{option.title}</Link>
+
+                                            
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                       // <nav id="mobile-menu">
+                                       //   <ProfileNavMenu /> 
+                                       // </nav> 
+                                    // <a className="d-none d-lg-inline-block last-child" onClick={handleLogout}>
+                                    // <UserIcon /> 
+                                    //    <span> Logout</span>
+                                    // </a>
                                     
                                  ) : (
                                     <Link className="d-none d-lg-inline-block last-child" href="/sign-in">
